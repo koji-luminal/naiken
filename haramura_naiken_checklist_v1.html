@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>清里 内見チェックリスト</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F4EE; --panel:#FFFFFF; --ink:#2C352F; --ink-soft:#5C665E; --ink-faint:#8A938B;
+    --line:#E4E0D6;
+    --teal:#2F6E5E; --blue:#3D6E99; --clay:#B5793F;
+    --good:#2F6E5E; --warn:#B08537; --bad:#9C5B47;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:"Noto Sans JP",sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:90px;}
+
+  /* sticky header */
+  .top{position:sticky;top:0;z-index:20;background:rgba(247,244,238,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 16px;}
+  .top .row{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .top h1{font-family:"Shippori Mincho",serif;font-weight:600;font-size:19px;margin:0;line-height:1.25;}
+  .top .sub{font-size:12.5px;color:var(--ink-faint);margin-top:1px;}
+  .save-dot{font-size:11.5px;color:var(--good);background:#2F6E5E14;padding:3px 9px;border-radius:999px;white-space:nowrap;}
+
+  .wrap{max-width:680px;margin:0 auto;padding:16px;}
+
+  .intro{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:14.5px;line-height:1.75;color:var(--ink-soft);margin-bottom:18px;}
+  .intro b{color:var(--ink);}
+  .meta{display:flex;gap:10px;margin-top:10px;}
+  .meta label{flex:1;font-size:12.5px;color:var(--ink-faint);}
+  .meta input{width:100%;margin-top:3px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;font-size:15px;font-family:inherit;background:#fff;}
+
+  .sec{margin-bottom:22px;}
+  .sec-h{display:flex;align-items:center;gap:9px;margin:0 2px 10px;}
+  .sec-h .dot{width:11px;height:11px;border-radius:3px;flex:none;}
+  .sec-h h2{font-family:"Shippori Mincho",serif;font-weight:600;font-size:17.5px;margin:0;}
+  .sec-h .tag{font-size:11px;color:var(--ink-faint);margin-left:auto;}
+
+  .priority .card{border-color:#B0853755;box-shadow:0 0 0 1px #B0853722;}
+  .priority-banner{font-size:12.5px;line-height:1.6;color:var(--warn);font-weight:700;letter-spacing:.04em;margin:0 2px 8px;}
+
+  .killer .card{border-color:#9C5B4766;box-shadow:0 0 0 1px #9C5B4733;background:#9C5B470A;}
+  .killer-banner{font-size:12.5px;line-height:1.6;color:var(--bad);font-weight:700;letter-spacing:.04em;margin:0 2px 8px;}
+  .st2{flex:1;text-align:center;padding:15px 4px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;font-weight:700;color:var(--ink-faint);background:#fff;cursor:pointer;user-select:none;transition:.12s;}
+  .st2[data-s="ok"].on{background:var(--good);border-color:var(--good);color:#fff;}
+  .st2[data-s="ng"].on{background:var(--bad);border-color:var(--bad);color:#fff;}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:15px 16px;margin-bottom:11px;}
+  .c-top{display:flex;align-items:baseline;gap:8px;margin-bottom:3px;}
+  .c-name{font-weight:700;font-size:17px;}
+  .c-score{font-size:12px;color:var(--ink-faint);border:1px solid var(--line);border-radius:6px;padding:1px 6px;white-space:nowrap;}
+  .c-score.prov{color:var(--warn);border-color:#B0853744;background:#B0853710;}
+  .c-hint{font-size:14.5px;line-height:1.7;color:var(--ink-soft);margin:5px 0 12px;}
+  .c-ask{font-size:14.5px;line-height:1.7;color:var(--ink);margin:5px 0 12px;padding:9px 11px;background:#3D6E990C;border-left:3px solid var(--blue);border-radius:0 8px 8px 0;}
+  .c-ask b{font-weight:700;}
+
+  .states{display:flex;gap:7px;margin-bottom:11px;}
+  .st{flex:1;text-align:center;padding:14px 4px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;font-weight:700;color:var(--ink-faint);background:#fff;cursor:pointer;user-select:none;transition:.12s;}
+  .st[data-s="good"].on{background:var(--good);border-color:var(--good);color:#fff;}
+  .st[data-s="warn"].on{background:var(--warn);border-color:var(--warn);color:#fff;}
+  .st[data-s="bad"].on{background:var(--bad);border-color:var(--bad);color:#fff;}
+
+  textarea.memo{width:100%;min-height:60px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;font-family:inherit;line-height:1.6;background:#fff;resize:vertical;color:var(--ink);}
+  textarea.memo::placeholder{color:#B7B0A2;}
+
+  .photo{display:flex;align-items:center;gap:9px;margin-top:11px;font-size:14px;color:var(--ink-soft);cursor:pointer;user-select:none;}
+  .photo .box{width:20px;height:20px;border:1.5px solid var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;background:#fff;}
+  .photo.on .box{background:var(--teal);border-color:var(--teal);}
+
+  .final{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:6px;}
+  .final h2{font-family:"Shippori Mincho",serif;font-size:18px;margin:0 0 4px;}
+  .final p{font-size:13.5px;line-height:1.65;color:var(--ink-faint);margin:0 0 12px;}
+  .final textarea{min-height:90px;}
+  .lean{display:flex;gap:8px;margin:12px 0;}
+  .lean .opt{flex:1;text-align:center;padding:14px 4px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;font-weight:700;color:var(--ink-faint);background:#fff;cursor:pointer;}
+  .lean .opt.on{background:var(--ink);border-color:var(--ink);color:#fff;}
+
+  /* sticky export */
+  .bar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);padding:12px 16px;display:flex;gap:10px;max-width:680px;margin:0 auto;}
+  .bar button{flex:1;padding:15px;border:none;border-radius:11px;font-size:16px;font-weight:700;font-family:inherit;cursor:pointer;}
+  .bar .copy{background:var(--teal);color:#fff;}
+  .bar .reset{background:#fff;color:var(--ink-soft);border:1px solid var(--line);flex:0 0 auto;padding:13px 16px;}
+
+  .toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:11px 19px;border-radius:999px;font-size:14px;opacity:0;transition:.25s;z-index:40;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="top">
+  <div class="row">
+    <div>
+      <h1>原村 払沢 ｜ 内見チェックリスト</h1>
+      <div class="sub">2,599万・築2004・2SLDK ／ 横内さん（信州Alps）</div>
+    </div>
+    <span class="save-dot" id="saveDot">自動保存</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="intro">
+    棒グラフの項目順に並べています。現地で<b>良い／要確認／気になる</b>をタップし、メモを残せば、そのまま暫定値を確定値に置き換える材料になります。入力はこの端末に自動保存。最後に<b>「結果をコピー」</b>で全部まとめて持ち出せます。<span style="color:var(--warn);font-weight:700;">青枠の質問</span>は横内さん・売主に確認する項目です。
+    <div class="meta">
+      <label>内見日<input type="date" id="visitDate"></label>
+      <label>天気・気温メモ<input type="text" id="weather" placeholder="例：晴れ・◯℃"></label>
+    </div>
+  </div>
+
+  <div id="sections"></div>
+
+  <div class="final">
+    <h2>二人の総合所感</h2>
+    <p>項目を見終えたあと、夫婦で話して。第一印象でなく、全体のバランスで。</p>
+    <div class="lean" id="lean"></div>
+    <textarea class="memo" id="finalMemo" placeholder="惹かれた点／引っかかった点／価格に上限を上げる価値があるか／次にやること…"></textarea>
+  </div>
+</div>
+
+<div class="bar">
+  <button class="copy" id="copyBtn">結果をコピー</button>
+  <button class="reset" id="resetBtn">リセット</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = [
+  {
+    group:'足切り・基準（該当＝見送り）', color:'#9C5B47', killer:true,
+    note:'スコアで測る前の判断。ここで引っかかったら、他がどれだけ良くても見送り。道幅・駐車の基準はすべて我が家のカイエン。',
+    items:[
+      {id:'road', name:'道幅（カイエンで通れるか）', score:'カイエン基準', binary:['カイエンで無理なく通れる','カイエンで通れない → NG'],
+       hint:'幅2m・全長5mのカイエンで、前面道路・進入が無理なく通れるか。掲載は北西5m公道・間口6m。一般車基準では判断しない。冬の雪・凍結も想定。'},
+      {id:'parking', name:'駐車場（カイエン＋来客）', score:'カイエン基準', binary:['カイエン＋来客が置ける','置けない・取り回し不可 → NG'],
+       hint:'カイエン（5m）が無理なく停められ、来客分も置けるか。掲載は並列2台可。広島からの客も想定し、近くに停められる余地も。雪を寄せる余地・切り返しも。'},
+      {id:'smell', name:'近隣からの臭い', score:'即NG条件', binary:['臭いは届かない','臭いが届く → 即NG'],
+       hint:'田園地帯。畑の堆肥・畜舎・農業施設など、風向きで臭いが届かないか。かつて漬物工場の向かいの物件があった。風の向きで変わるので意識して。',
+       ask:'周辺に臭いの出る施設（畜舎・農業施設等）がないか。'},
+    ]
+  },
+  {
+    group:'最優先：原村の核（現地で確定）', color:'#B08537', priority:true,
+    note:'写真では分からず、現地でしか潰せない核。ここに一番時間を割く。',
+    items:[
+      {id:'view', name:'眺望（リビングから測る）', score:'本命級・暫定+4候補', prov:true,
+       hint:'原村最大の魅力。リビング正面の主役窓から、田園越しに山並みが視界いっぱいに開けるか（掲載写真では本命級）。ただし手前の電線・隣家・物置で抜けが止まらないか、実物で確認。和室の窓からの見えも。+4=正面主役窓から雄大に開ける／+3=しっかり開けるが限定的。',
+       ask:'季節・天候で山の見え方がどう変わるか。'},
+      {id:'insul', name:'断熱（窓・サッシ主軸）', score:'複層・枠未確定', prov:true,
+       hint:'掲載は複層ガラス記載あり。ただしサッシ枠がアルミか樹脂かが未確定＝ここが断熱の分かれ目（清里は樹脂ペアで+3）。窓まわりの結露跡・大開口・和室の障子内側の窓も。刻み＝+4 トリプルや等級6以上／+3 ペア＋樹脂・複合／+2 ペアだがアルミ／+1 単板。標高の寒さは標高シーソー側で見て、ここには織り込まない。',
+       ask:'サッシ枠はアルミか樹脂か複合か。壁・天井の断熱仕様。冬の光熱費の実額・底冷えの体感。'},
+      {id:'maker', name:'丸正の作りか（断熱の裏取り）', score:'横内さん確認の核', prov:true,
+       hint:'自社売主物件。富士見大本命と同じ丸正（イザットハウス）の作りなら、高気密高断熱・水抜き不要が期待できる＝断熱の暫定が一気に確定。横内さん経由の最大の強み。',
+       ask:'（横内さんへ）この建物は丸正／イザットハウスの作りか。C値・気密測定・水抜き不要かどうか。'},
+    ]
+  },
+  {
+    group:'非日常度', color:'#3D6E99',
+    items:[
+      {id:'open', name:'開放感（吹抜け・勾配天井・ロフト）', score:'暫定+3〜4', prov:true,
+       hint:'吹抜け＋勾配天井＋ロフト＋木の天井（掲載写真）。実際に立ったときの抜け感・気持ちよさ。2階から吹抜け越しにリビングを見下ろす感覚。+4=特別枠。',
+       ask:''},
+      {id:'material', name:'素材感（標準・薪なし）', score:'清里に一歩譲る',
+       hint:'床は複合フローリング（無垢でない）、水回りは機能的だが標準。薪ストーブは無し（後付け前提）。清里のアンコール＋無垢の素材感とは方向が違う。実用性と引き換えにcraftの引きは弱い、を前提に実物を。',
+       ask:''},
+      {id:'space', name:'広さ・間取りのゆとり（プラス材料）', score:'130㎡・2SLDK',
+       hint:'建物130㎡（清里95㎡より広い）、2SLDK、トイレ2ヶ所、二世帯向き。夫婦＋来客（広島）に余裕。和室の使い勝手、収納（WIC）も。',
+       ask:''},
+    ]
+  },
+  {
+    group:'追加コスト回避度（上＝回避できている）', color:'#5C665E',
+    items:[
+      {id:'sewer', name:'公共下水道', score:'＋大きく加点',
+       hint:'掲載は下水道。浄化槽が不要＝点検費・維持の手間がかからない（清里は浄化槽だった）。二拠点で留守がちでも管理が楽。原村の明確なプラス。現地で接続を確認。',
+       ask:'下水道に接続済みか。'},
+      {id:'heater', name:'給湯器（買主負担・必須コスト）', score:'−必須コスト',
+       hint:'掲載明記「給湯器は買主負担での設置が必要」。今すぐ風呂が使えない＝生活開始の必須費用。プロパン用ガス給湯器で安く（30万前後）か、オフグリッド構想ならエコキュート（電気・50〜60万）に倒すか。給湯器ゼロ＝値引き交渉の余地。',
+       ask:'（横内さんへ）給湯器分を価格から引けるか。どのレベルの給湯器が適切か。ガスはプロパンか都市ガスか（掲載に両方の記載があり要確認）。'},
+      {id:'roof', name:'屋根・外壁', score:'要確認',
+       hint:'屋根材の種別と状態（掲載写真ではソーラー的なパネルも屋根に見える＝要確認）。外壁の塗装の傷み・最終塗装時期。築22年なので外装メンテの時期に来ているか。',
+       ask:'外壁の最終塗装時期。屋根の状態・補修歴。屋根のパネル状のものは何か。'},
+      {id:'water', name:'水回り（キッチン・浴室・洗面）', score:'要確認',
+       hint:'キッチン・浴室・洗面（掲載写真では機能的・標準）。築22年なりの劣化・更新の要否。追焚き機能あり。',
+       ask:'水回りの更新履歴。'},
+      {id:'garden', name:'庭の整備', score:'−軽微',
+       hint:'庭10坪以上・整形地。現況やや荒れ（防草シート＋雑草／掲載写真）。整地・植栽は自分で手をかける前提。山並みビューを活かす庭づくりの余地。',
+       ask:''},
+    ]
+  },
+  {
+    group:'横内さんと現場で確認（構造・将来）', color:'#5C665E',
+    items:[
+      {id:'stove', name:'薪ストーブの設置可能場所', score:'後付け可否',
+       hint:'広い吹抜けリビングのどこに薪ストーブ＋煙突を後付けできるか（購入と同時でなくとも）。炉台スペース、煙突の抜き方（吹抜けを活かせるか）。バーモントキャスティングス想定で約150万。',
+       ask:'（横内さんへ）吹抜けリビングへの薪ストーブ後付けは可能か。煙突ルートの目安。'},
+      {id:'storage', name:'薪棚・物置（後付けの法規）', score:'要確認',
+       hint:'薪棚・物置の有無と設置場所。後付け物置は建築法改定で厳しくなった可能性＝準都市計画区域・無指定での地元の運用を確認。10㎡超等で建築確認が要る場合も。',
+       ask:'（横内さんへ）薪棚・物置の後付けは可能か。建築確認・建ぺい率の制約は。'},
+      {id:'jichikai', name:'自治会・管理', score:'OK／NG', binary:['OK','NG'],
+       hint:'二拠点の負担にならなそうならOK、引っかかればメモ、加入必須で役務が重い等ならNG。',
+       ask:'自治会の有無・加入の要否・活動・費用・役務。'},
+      {id:'zoning', name:'準都市計画・無指定の将来', score:'要確認',
+       hint:'準都市計画区域・用途無指定。将来、周辺の田園に建物が建って眺望を遮らないか。農地転用・開発の動き。原村の眺望が最大の価値なので、その持続性を確認。',
+       ask:'（横内さんへ）前面・眺望側の土地の用途・将来の建築可能性。'},
+    ]
+  },
+  {
+    group:'建物全体・構造', color:'#5C665E',
+    items:[
+      {id:'leak', name:'雨漏り・構造', score:'要確認',
+       hint:'吹抜け・勾配天井まわりの雨漏り跡。床の傾き・きしみ、基礎のクラック。掲載に「雨漏り・構造・給排水を引渡しより2年保証、シロアリ防除5年保証」とあり＝裏取り。',
+       ask:'保証の具体的な範囲・条件。'},
+    ]
+  },
+  {
+    group:'お金・取引条件', color:'#5C665E',
+    items:[
+      {id:'price', name:'価格・取引条件', score:'2,599万＝清里より381万安',
+       hint:'本体2,599万（清里2,980万より安い）。ただし給湯器買主負担・薪後付け・庭整備が乗る。現況空家・引渡時期相談（清里の9月待ちと違いすぐ可能の可能性）。住宅ローン減税が条件により適用との掲載。',
+       ask:'引渡し可能時期。住宅ローン減税の適用条件。値引きの余地（給湯器分など）。'},
+      {id:'rivals', name:'他の検討者・見学会の状況', score:'スピード判断',
+       hint:'6/25〜29の予約制見学会＝人が動く局面。富士見では契約間近の他客に消えた。急ぐべきか。お気に入り登録9人の表示も。',
+       ask:'（横内さんへ）他に検討中・申し込みはあるか。見学会の反応は。'},
+      {id:'reno', name:'リノベ・メンテナンス履歴', score:'コスト根拠',
+       hint:'築22年。どこに手を入れてきたか（外壁・屋根・水回り）。直近更新があれば当面の出費が少ない＝回避度プラス、手つかずなら交渉材料。',
+       ask:'これまでのリフォーム・メンテナンス履歴（時期と内容）。'},
+    ]
+  },
+];
+
+const KEY = 'haramura_naiken_v1';
+let store = {};
+try{ store = JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ store = {}; }
+let storageOK = true;
+try{ localStorage.setItem('__t','1'); localStorage.removeItem('__t'); }catch(e){ storageOK=false; }
+
+function save(){
+  if(!storageOK){ document.getElementById('saveDot').textContent='コピーで保存'; return; }
+  try{ localStorage.setItem(KEY, JSON.stringify(store)); flashSave(); }catch(e){}
+}
+let saveTimer;
+function flashSave(){
+  const d=document.getElementById('saveDot'); d.textContent='保存しました';
+  clearTimeout(saveTimer); saveTimer=setTimeout(()=>d.textContent='自動保存',1200);
+}
+
+function st(id,key,def){ return (store[id]&&store[id][key]!==undefined)?store[id][key]:def; }
+function set(id,key,val){ if(!store[id])store[id]={}; store[id][key]=val; save(); }
+
+// render
+const sc=document.getElementById('sections');
+DATA.forEach(sec=>{
+  const wrap=document.createElement('div');
+  wrap.className='sec'+(sec.priority?' priority':'')+(sec.killer?' killer':'');
+  let h=`<div class="sec-h"><span class="dot" style="background:${sec.color}"></span><h2>${sec.group}</h2></div>`;
+  if(sec.priority && sec.note) h+=`<div class="priority-banner">${sec.note}</div>`;
+  if(sec.killer && sec.note) h+=`<div class="killer-banner">${sec.note}</div>`;
+  sec.items.forEach(it=>{
+    const buttons = it.binary
+      ? `<div class="states">
+           <div class="st2" data-s="ok">${it.binary[0]}</div>
+           <div class="st2" data-s="ng">${it.binary[1]}</div>
+         </div>`
+      : `<div class="states">
+           <div class="st" data-s="good">良い</div>
+           <div class="st" data-s="warn">要確認</div>
+           <div class="st" data-s="bad">気になる</div>
+         </div>`;
+    h+=`<div class="card" data-id="${it.id}">
+      <div class="c-top"><span class="c-name">${it.name}</span><span class="c-score ${it.prov?'prov':''}">${it.score}</span></div>
+      <div class="c-hint">${it.hint}</div>
+      ${it.ask?`<div class="c-ask"><b>聞く：</b>${it.ask}</div>`:''}
+      ${buttons}
+      <textarea class="memo" data-k="memo" placeholder="メモ（その場で見たこと・聞いた答え）"></textarea>
+      <div class="photo" data-k="photo"><span class="box">✓</span>写真を撮った</div>
+    </div>`;
+  });
+  wrap.innerHTML=h;
+  sc.appendChild(wrap);
+});
+
+// hydrate + bind
+document.querySelectorAll('.card').forEach(card=>{
+  const id=card.dataset.id;
+  // states (.st = 三択 / .st2 = 二択足切り)
+  const cur=st(id,'state','');
+  card.querySelectorAll('.st, .st2').forEach(b=>{
+    if(b.dataset.s===cur) b.classList.add('on');
+    b.addEventListener('click',()=>{
+      const was=b.classList.contains('on');
+      card.querySelectorAll('.st, .st2').forEach(x=>x.classList.remove('on'));
+      if(!was){ b.classList.add('on'); set(id,'state',b.dataset.s); }
+      else set(id,'state','');
+    });
+  });
+  // memo
+  const ta=card.querySelector('textarea');
+  ta.value=st(id,'memo','');
+  ta.addEventListener('input',()=>set(id,'memo',ta.value));
+  // photo
+  const ph=card.querySelector('.photo');
+  if(st(id,'photo',false)) ph.classList.add('on');
+  ph.addEventListener('click',()=>{ ph.classList.toggle('on'); set(id,'photo',ph.classList.contains('on')); });
+});
+
+// meta fields
+['visitDate','weather','finalMemo'].forEach(fid=>{
+  const el=document.getElementById(fid);
+  el.value=st('_meta',fid,'');
+  el.addEventListener('input',()=>set('_meta',fid,el.value));
+});
+// lean
+const leanOpts=[['keep','前向き'],['hold','保留・再検討'],['pass','見送り']];
+const leanWrap=document.getElementById('lean');
+leanOpts.forEach(([v,label])=>{
+  const o=document.createElement('div'); o.className='opt'; o.textContent=label;
+  if(st('_meta','lean','')===v) o.classList.add('on');
+  o.addEventListener('click',()=>{
+    leanWrap.querySelectorAll('.opt').forEach(x=>x.classList.remove('on'));
+    o.classList.add('on'); set('_meta','lean',v);
+  });
+  leanWrap.appendChild(o);
+});
+
+// export
+const STLABEL={good:'良い',warn:'要確認',bad:'気になる',ok:'視界に入らない',ng:'視界に入る→即NG'};
+function buildText(){
+  let out=`■ 原村 払沢 内見チェック\n内見日:${st('_meta','visitDate','-')}　天気:${st('_meta','weather','-')}\n`;
+  DATA.forEach(sec=>{
+    out+=`\n【${sec.group}】\n`;
+    sec.items.forEach(it=>{
+      const s=st(it.id,'state',''); const m=st(it.id,'memo',''); const p=st(it.id,'photo',false);
+      let sLabel='-';
+      if(s){ sLabel = it.binary ? (s==='ok'?it.binary[0]:it.binary[1]) : (STLABEL[s]||s); }
+      out+=`・${it.name}（${it.score}）: ${sLabel}${p?' 📷':''}\n`;
+      if(m) out+=`   ${m.replace(/\n/g,'\n   ')}\n`;
+    });
+  });
+  const leanMap={keep:'前向き',hold:'保留・再検討',pass:'見送り'};
+  out+=`\n【二人の総合所感】 ${leanMap[st('_meta','lean','')]||'-'}\n`;
+  const fm=st('_meta','finalMemo',''); if(fm) out+=fm+'\n';
+  return out;
+}
+function toast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),1800); }
+
+document.getElementById('copyBtn').addEventListener('click',async()=>{
+  const txt=buildText();
+  try{ await navigator.clipboard.writeText(txt); toast('コピーしました'); }
+  catch(e){
+    const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); toast('コピーしました'); }catch(e2){ toast('コピーできませんでした'); }
+    document.body.removeChild(ta);
+  }
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  if(confirm('入力をすべて消去します。よろしいですか？')){
+    store={}; try{ localStorage.removeItem(KEY); }catch(e){} location.reload();
+  }
+});
+</script>
+</body>
+</html>
